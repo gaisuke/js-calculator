@@ -2,6 +2,8 @@ const numbers = document.querySelectorAll('.number');
 const calculatorScreen = document.querySelector('.calculator-screen');
 const operators = document.querySelectorAll('.operator');
 const equal = document.querySelector('.equal-sign');
+const clearBtn = document.querySelector('.all-clear');
+const decimal = document.querySelector('.decimal');
 
 let prevNumber = '';
 let calculationOperator = '';
@@ -25,28 +27,54 @@ equal.addEventListener("click", (event) => {
     updateScreen(currentNumber);
 });
 
+clearBtn.addEventListener("click", () => {
+    clearAll();
+    updateScreen(currentNumber);
+});
+
+decimal.addEventListener("click", (event) =>{
+    inputDecimal(event.target.value);
+    updateScreen(currentNumber);
+});
+
+inputDecimal = (dot) => {
+    if (currentNumber.includes('.')) {
+        return
+    }
+    currentNumber += dot;
+};
+
+const clearAll = () => {
+    prevNumber = 0;
+    calculationOperator = '';
+    currentNumber = 0;
+};
+
 const calculate = () => {
-    prevNumber = parseInt(prevNumber);
-    currentNumber = parseInt(currentNumber);
-    let result = '';
-    switch (calculationOperator) {
-        case "+":
-            result = prevNumber + currentNumber;
-            break;
-        case "-":
-            result = prevNumber - currentNumber;
-            break;
-        case "*":
-            result = prevNumber * currentNumber;
-            break;
-        case "/": 
-            result = prevNumber / currentNumber;
-            break;
-        default:
-            break;
+    let result = 0;
+    if (prevNumber != null || currentNumber != null) {
+        switch (calculationOperator) {
+            case "+":
+                result = parseFloat(prevNumber) + parseFloat(currentNumber);
+                break;
+            case "-":
+                result = parseFloat(prevNumber) - parseFloat(currentNumber);
+                break;
+            case "*":
+                result = parseFloat(prevNumber) * parseFloat(currentNumber);
+                break;
+            case "/": 
+                result = parseFloat(prevNumber) / parseFloat(currentNumber);
+                break;
+            default:
+                break;
+        }
+    } else {
+        // currentNumber = result;
     }
     currentNumber = result;
     calculationOperator = '';
+    console.log(result)
 }
 
 const updateScreen = (number) => {
@@ -62,7 +90,9 @@ const inputNumber = (number) => {
 };
 
 const inputOperator = (operator) => {
-    prevNumber = currentNumber;
+    if (calculationOperator === '') {
+        prevNumber = currentNumber;
+    }
     calculationOperator = operator;
     currentNumber = '';
 };
